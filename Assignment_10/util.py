@@ -100,6 +100,8 @@ def train(model, device, train_loader, optimizer, scheduler, criterion):
 
     pbar.set_description(desc= f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100*correct/processed:0.2f} LR={get_learning_rate(optimizer)}')
     train_acc.append(100*correct/processed)
+    
+  return train_losses, train_acc, lrs
 
 def test(model, device, test_loader, criterion):
     model.eval()
@@ -121,3 +123,5 @@ def test(model, device, test_loader, criterion):
         100. * correct / len(test_loader.dataset)))
 
     test_acc.append(100. * correct / len(test_loader.dataset))
+    
+    return test_losses, test_acc
