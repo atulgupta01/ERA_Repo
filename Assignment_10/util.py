@@ -3,7 +3,7 @@ import torchvision
 import torch
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-from ERA_Repo.Assignment_10.LR_Finder import LRFinder
+from ./LR_Finder import LRFinder
 import torch.optim as optim
 from tqdm import tqdm
 
