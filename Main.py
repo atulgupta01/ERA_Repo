@@ -112,8 +112,8 @@ def get_cifar_data(train_transforms, test_transforms):
 def get_optimizer(v_name, model, lr, decay):
   if v_name == "ADAM":
     optimizer = optim.Adam(model.parameters(), lr = lr, weight_decay = decay)
-
-return optimizer
+    
+  return optimizer
 
 def get_scheduler(v_name, MAX_LR, steps_per_epoch, anneal_strategy = 'linear', v_epochs = 20):
   if v_name == "OneCycle":
