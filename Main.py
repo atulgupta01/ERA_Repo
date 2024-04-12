@@ -132,4 +132,7 @@ def get_scheduler(v_name, optimizer, MAX_LR, steps_per_epoch, EPOCH, anneal_stra
 
 def set_epochs(v_epochs = 20):
   EPOCH = v_epochs
+
+def get_epochs():
+  return EPOCH
   
