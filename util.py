@@ -4,6 +4,7 @@ from albumentations.pytorch import ToTensorV2
 from ERA_Repo.Assignment_10.LR_Finder import LRFinder
 from torchsummary import summary
 import matplotlib.pyplot as plt
+import numpy as np
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
@@ -52,3 +53,37 @@ def accuracy_plot(train_losses, test_losses, train_acc, test_acc):
   axs[1, 1].plot(test_acc)
   axs[1, 1].set_title("Test Accuracy")
 
+def plot_error(model, test_loader):
+  error_images = []
+  error_target = []
+  error_predicted = []
+  count = 0
+
+  plot_size = 10
+
+  for data, target in test_loader:
+    data, target = data.to(device), target.to(device)
+    output = model(data)
+    pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+    for i in range (0, 127):
+      if (pred[i].cpu().numpy()[0] != target[i].cpu().numpy()):
+        error_images.append(data[i])
+        error_target.append(target[i].cpu().numpy())
+        error_predicted.append(pred[i].cpu().numpy()[0])
+
+        count = count + 1
+
+        if count > plot_size:
+          break
+
+  figure = plt.figure(figsize=(8, 10))
+  
+  for index in range(1, plot_size + 1):
+    plt.subplot(5, 2, index)
+    plt.axis('off')
+    img = error_images[index].cpu().numpy()
+    plt.imshow(np.transpose(img, (1, 2, 0)))
+    v_label = "Predicted: " + classes[error_predicted[index].item()] + \
+            "\nActual: " + classes[error_target[index].item()]
+
+    plt.title(label=v_label, fontsize=8, color="blue")
