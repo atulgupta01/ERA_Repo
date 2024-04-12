@@ -12,6 +12,7 @@ test_losses = []
 train_acc = []
 test_acc = []
 lrs = []
+EPOCH = 20
 
 def train(model, device, train_loader, optimizer, scheduler, criterion):
   model.train()
@@ -115,20 +116,20 @@ def get_optimizer(v_name, model, lr, decay):
     
   return optimizer
 
-def get_scheduler(v_name, MAX_LR, steps_per_epoch, anneal_strategy = 'linear', v_epochs = 20):
+def get_scheduler(v_name, optimizer, MAX_LR, steps_per_epoch, anneal_strategy = 'linear', EPOCH):
   if v_name == "OneCycle":
     scheduler = OneCycleLR(optimizer, 
                            max_lr=MAX_LR, 
                            steps_per_epoch= steps_per_epoch,
                            anneal_strategy = anneal_strategy, 
-                           epochs=get_epochs(v_epochs), 
-                           pct_start=5/get_epochs(v_epochs),
+                           epochs=EPOCH, 
+                           pct_start=5/EPOCH,
                            div_factor=100, 
                            three_phase=False, 
                            final_div_factor=100)
 
   return scheduler
 
-def get_epochs(v_epochs = 20):
-  return v_epochs
+def set_epochs(v_epochs = 20):
+  EPOCH = v_epochs
   
