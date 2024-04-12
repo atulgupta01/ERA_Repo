@@ -95,3 +95,13 @@ class args():
     self.device = device
     self.use_cuda = use_cuda
     self.kwargs = {'num_workers': 1, 'pin_memory': True} if self.use_cuda else {}
+
+def get_cifar_data(train_transforms, test_transforms):
+    trainset = Cifar10Dataset(root='./data', train=True, download=True, transform=train_transforms)
+    testset = Cifar10Dataset(root='./data', train=False, download=True, transform=test_transforms)
+    train_loader = torch.utils.data.DataLoader(trainset, batch_size=args().batch_size,
+                                          shuffle=True, **args().kwargs)
+    test_loader = torch.utils.data.DataLoader(testset, batch_size=args().batch_size,
+                                          shuffle=True, **args().kwargs)
+    
+    return train_loader, test_loader 
