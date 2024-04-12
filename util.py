@@ -34,9 +34,9 @@ def lr_range_checker(model, train_loader, optimizer, criterion):
   lr_finder.plot() # to inspect the loss-learning rate graph
   lr_finder.reset() # to reset the model and optimizer to their initial state
 
-def get_model_summary(model, device):
+def get_model_summary(model, device, input_size):
   model = model().to(device)
-  summary(model, input_size=(3, 32, 32))
+  summary(model, input_size= input_size)
 
   return model
 
