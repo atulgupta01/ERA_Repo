@@ -2,6 +2,7 @@ import cv2
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from ERA_Repo.Assignment_10.LR_Finder import LRFinder
+from torchsummary import summary
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
