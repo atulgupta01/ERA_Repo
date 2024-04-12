@@ -116,7 +116,7 @@ def get_optimizer(v_name, model, lr, decay):
     
   return optimizer
 
-def get_scheduler(v_name, optimizer, MAX_LR, steps_per_epoch, anneal_strategy = 'linear', EPOCH):
+def get_scheduler(v_name, optimizer, MAX_LR, steps_per_epoch, EPOCH, anneal_strategy = 'linear'):
   if v_name == "OneCycle":
     scheduler = OneCycleLR(optimizer, 
                            max_lr=MAX_LR, 
