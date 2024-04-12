@@ -1,36 +1,10 @@
 import cv2
-import torchvision
-import torch
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from ERA_Repo.Assignment_10.LR_Finder import LRFinder
-import torch.optim as optim
-from tqdm import tqdm
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
-
-
-class Cifar10Dataset(torchvision.datasets.CIFAR10):
-    def __init__(self, root="~/data/cifar10", train=True, download=True, transform=None):
-        super().__init__(root=root, train=train, download=download, transform=transform)
-
-    def __getitem__(self, index):
-        image, label = self.data[index], self.targets[index]
-
-        if self.transform is not None:
-            transformed = self.transform(image=image)
-            image = transformed["image"]
-
-        return image, label
-
-class args():
-
-  def __init__(self,device = 'cpu' ,use_cuda = False) -> None:
-    self.batch_size = 512
-    self.device = device
-    self.use_cuda = use_cuda
-    self.kwargs = {'num_workers': 1, 'pin_memory': True} if self.use_cuda else {}
 
 train_transforms = A.Compose([
     
