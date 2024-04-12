@@ -4,6 +4,7 @@ import torch.optim as optim
 from tqdm import tqdm
 from ERA_Repo.util import get_learning_rate
 import torch.optim as optim
+from torch.optim.lr_scheduler import OneCycleLR
 
 
 train_losses = []
