@@ -68,3 +68,24 @@ def train_val_seq(model, device, train_loader, test_loader, optimizer, scheduler
         test(model, device, test_loader, criterion)
     
     return train_losses, test_losses, train_acc, test_acc, lrs
+
+class Cifar10Dataset(torchvision.datasets.CIFAR10):
+    def __init__(self, root="~/data/cifar10", train=True, download=True, transform=None):
+        super().__init__(root=root, train=train, download=download, transform=transform)
+
+    def __getitem__(self, index):
+        image, label = self.data[index], self.targets[index]
+
+        if self.transform is not None:
+            transformed = self.transform(image=image)
+            image = transformed["image"]
+
+        return image, label
+
+class args():
+
+  def __init__(self,device = 'cpu' ,use_cuda = False) -> None:
+    self.batch_size = 512
+    self.device = device
+    self.use_cuda = use_cuda
+    self.kwargs = {'num_workers': 1, 'pin_memory': True} if self.use_cuda else {}
