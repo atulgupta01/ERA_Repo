@@ -2,6 +2,7 @@ import torchvision
 import torch
 import torch.optim as optim
 from tqdm import tqdm
+from torchsummary import summary
 
 
 train_losses = []
