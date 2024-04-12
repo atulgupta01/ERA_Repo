@@ -3,6 +3,7 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from ERA_Repo.Assignment_10.LR_Finder import LRFinder
 from torchsummary import summary
+import matplotlib.pyplot as plt
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
@@ -40,4 +41,14 @@ def get_model_summary(model, device, input_size):
 
   return model
 
+def accuracy_plot(train_losses, test_losses, train_acc, test_acc):
+  fig, axs = plt.subplots(2,2,figsize=(15,10))
+  axs[0, 0].plot(torch.tensor(train_losses).cpu().detach().numpy())
+  axs[0, 0].set_title("Training Loss")
+  axs[1, 0].plot(train_acc)
+  axs[1, 0].set_title("Training Accuracy")
+  axs[0, 1].plot(test_losses)
+  axs[0, 1].set_title("Test Loss")
+  axs[1, 1].plot(test_acc)
+  axs[1, 1].set_title("Test Accuracy")
 
