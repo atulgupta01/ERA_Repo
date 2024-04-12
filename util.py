@@ -9,6 +9,8 @@ import numpy as np
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
 
+CIFAR_classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
 train_transforms = A.Compose([
     
     A.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010]),
@@ -53,7 +55,7 @@ def accuracy_plot(train_losses, test_losses, train_acc, test_acc):
   axs[1, 1].plot(test_acc)
   axs[1, 1].set_title("Test Accuracy")
 
-def plot_error(model, test_loader):
+def plot_error(model, test_loader, device):
   error_images = []
   error_target = []
   error_predicted = []
@@ -83,7 +85,7 @@ def plot_error(model, test_loader):
     plt.axis('off')
     img = error_images[index].cpu().numpy()
     plt.imshow(np.transpose(img, (1, 2, 0)))
-    v_label = "Predicted: " + classes[error_predicted[index].item()] + \
-            "\nActual: " + classes[error_target[index].item()]
+    v_label = "Predicted: " + CIFAR_classes[error_predicted[index].item()] + \
+            "\nActual: " + CIFAR_classes[error_target[index].item()]
 
     plt.title(label=v_label, fontsize=8, color="blue")
