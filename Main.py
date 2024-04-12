@@ -1,3 +1,9 @@
+import torchvision
+import torch
+import torch.optim as optim
+from tqdm import tqdm
+
+
 train_losses = []
 test_losses = []
 train_acc = []
