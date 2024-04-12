@@ -3,6 +3,7 @@ import torch
 import torch.optim as optim
 from tqdm import tqdm
 from ERA_Repo.util import get_learning_rate
+import torch.optim as optim
 
 
 train_losses = []
@@ -105,4 +106,28 @@ def get_cifar_data(train_transforms, test_transforms):
     test_loader = torch.utils.data.DataLoader(testset, batch_size=args().batch_size,
                                           shuffle=True, **args().kwargs)
     
-    return train_loader, test_loader 
+    return train_loader, test_loader
+
+def get_optimizer(v_name, model, lr, decay):
+  if v_name == "ADAM":
+    optimizer = optim.Adam(model.parameters(), lr = lr, weight_decay = decay)
+
+return optimizer
+
+def get_scheduler(v_name, MAX_LR, steps_per_epoch, anneal_strategy = 'linear', v_epochs = 20):
+  if v_name == "OneCycle":
+    scheduler = OneCycleLR(optimizer, 
+                           max_lr=MAX_LR, 
+                           steps_per_epoch= steps_per_epoch,
+                           anneal_strategy = anneal_strategy, 
+                           epochs=get_epochs(v_epochs), 
+                           pct_start=5/get_epochs(v_epochs),
+                           div_factor=100, 
+                           three_phase=False, 
+                           final_div_factor=100)
+
+  return scheduler
+
+def get_epochs(v_epochs = 20):
+  return v_epochs
+  
