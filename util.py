@@ -8,6 +8,7 @@ import numpy as np
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
+from torchvision import transforms
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
