@@ -55,13 +55,13 @@ def accuracy_plot(train_losses, test_losses, train_acc, test_acc):
   axs[1, 1].plot(test_acc)
   axs[1, 1].set_title("Test Accuracy")
 
-def plot_error(model, test_loader, device):
+def get_error_images(model, test_loader, device, count):
   error_images = []
   error_target = []
   error_predicted = []
   count = 0
 
-  plot_size = 10
+  plot_size = count
 
   for data, target in test_loader:
     data, target = data.to(device), target.to(device)
@@ -77,11 +77,14 @@ def plot_error(model, test_loader, device):
 
         if count > plot_size:
           break
+    return error_images, error_target, error_predicted
 
+def plot_error(error_images, error_target, error_predicted, row_count):
+  
   figure = plt.figure(figsize=(8, 10))
   
   for index in range(1, plot_size + 1):
-    plt.subplot(5, 2, index)
+    plt.subplot(row_count, len(error_target)/row_count, index)
     plt.axis('off')
     img = error_images[index].cpu().numpy()
     plt.imshow(np.transpose(img, (1, 2, 0)))
