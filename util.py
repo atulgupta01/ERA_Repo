@@ -5,6 +5,9 @@ from ERA_Repo.Assignment_10.LR_Finder import LRFinder
 from torchsummary import summary
 import matplotlib.pyplot as plt
 import numpy as np
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
+from pytorch_grad_cam.utils.image import show_cam_on_image
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
@@ -26,6 +29,13 @@ test_transforms = A.Compose([
     A.Normalize([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010]),
     ToTensorV2(),
 ])
+
+def inverse_normalize(tensor):
+    inv_normalize = transforms.Normalize(
+                    mean= [-m/s for m, s in zip([0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010])],
+                std= [1/s for s in [0.2023, 0.1994, 0.2010]]
+                )
+    return inv_normalize(tensor)
 
 def get_learning_rate(optimizer):
     
@@ -79,7 +89,7 @@ def get_error_images(model, test_loader, device, img_count):
 
 def plot_error(error_images, error_target, error_predicted, row_count):
   
-  figure = plt.figure(figsize=(8, 10))
+  figure = plt.figure(figsize=(5, 8))
   total_img = int(len(error_target))
   
   for index in range(0, total_img):
@@ -90,3 +100,44 @@ def plot_error(error_images, error_target, error_predicted, row_count):
     v_label = "Predicted: " + CIFAR_classes[error_predicted[index].item()] + \
             "\nActual: " + CIFAR_classes[error_target[index].item()]
     plt.title(label=v_label, fontsize=8, color="blue")
+  plt.show()
+
+def gradcam_plot(model, img, target):
+
+  target_layers = model.layer3
+  input_tensor = img.unsqueeze(0)
+  cam = GradCAM(model=model, target_layers=target_layers)
+  targets = [ClassifierOutputTarget(target)]
+  grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
+  grayscale_cam = grayscale_cam[0, :]
+  rgb_img = inverse_normalize(img).permute(1, 2, 0).cpu().numpy()
+  visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
+  model_output = cam.outputs
+
+  return visualization, model_output
+
+def plot_gradcam_images(model, error_images, error_predicted, error_target, row_count):
+  cam_vis_list = []
+  cam_out_list = []
+  
+  total_img = len(error_images)
+  row_count = 5
+
+  for i in range(0, total_img):
+    vis, out = gradcam_plot(model, error_images[i], error_target[i])
+
+    cam_vis_list.append(vis)
+    cam_out_list.append(out)
+
+  figure = plt.figure(figsize=(5, 8))
+
+  for index in range(0, total_img):
+      plt.subplot(row_count, int(total_img/row_count), index+1)
+      plt.axis('off')
+      img = cam_vis_list[index]
+      plt.imshow(img)
+      v_label = "Predicted: " + CIFAR_classes[error_predicted[index].item()] + \
+              "\nActual: " + CIFAR_classes[error_target[index].item()]
+      plt.title(label=v_label, fontsize=8, color="blue")
+
+  plt.show()
