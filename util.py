@@ -55,19 +55,17 @@ def accuracy_plot(train_losses, test_losses, train_acc, test_acc):
   axs[1, 1].plot(test_acc)
   axs[1, 1].set_title("Test Accuracy")
 
-def get_error_images(model, test_loader, device, count):
+def get_error_images(model, test_loader, device, img_count):
   error_images = []
   error_target = []
   error_predicted = []
   count = 0
 
-  plot_size = count
-
   for data, target in test_loader:
     data, target = data.to(device), target.to(device)
     output = model(data)
     pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-    for i in range (0, 127):
+    for i in range (0, 500):
       if (pred[i].cpu().numpy()[0] != target[i].cpu().numpy()):
         error_images.append(data[i])
         error_target.append(target[i].cpu().numpy())
@@ -75,20 +73,20 @@ def get_error_images(model, test_loader, device, count):
 
         count = count + 1
 
-        if count > plot_size:
+        if count >= img_count:
           break
     return error_images, error_target, error_predicted
 
 def plot_error(error_images, error_target, error_predicted, row_count):
   
   figure = plt.figure(figsize=(8, 10))
+  total_img = int(len(error_target))
   
-  for index in range(1, plot_size + 1):
-    plt.subplot(row_count, len(error_target)/row_count, index)
+  for index in range(0, total_img):
+    plt.subplot(row_count, int(total_img/row_count), index+1)
     plt.axis('off')
     img = error_images[index].cpu().numpy()
     plt.imshow(np.transpose(img, (1, 2, 0)))
     v_label = "Predicted: " + CIFAR_classes[error_predicted[index].item()] + \
             "\nActual: " + CIFAR_classes[error_target[index].item()]
-
     plt.title(label=v_label, fontsize=8, color="blue")
